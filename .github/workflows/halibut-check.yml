@@ -1,0 +1,19 @@
+name: Block PR if "halibut" present
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  scan-for-halibut:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Search for forbidden word
+        run: |
+          if git grep -n "halibut"; then
+            echo "::error::Found 'halibut' in code. Requires @johndoe review."
+            exit 1
+          fi
